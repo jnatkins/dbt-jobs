@@ -18,6 +18,16 @@ filter_companies as (
 
 ),
 
+filter_titles as (
+
+    select * from filter_companies
+    where title not ilike '%Psyk%'
+      and title not ilike '%Psych%'
+      and title not ilike '%Eating Disorder Recovery%'
+      and title not ilike '%Security Specialist%'
+
+),
+
 extract_seniority as (
     select 
         job_id,
@@ -37,7 +47,7 @@ extract_seniority as (
             when title ilike '%President%' then 'Executive'
             else 'Entry-Level'
         end as seniority
-    from filter_companies
+    from filter_titles
 ),
 
 clean_titles as (
@@ -62,6 +72,9 @@ clean_titles as (
             when title ilike '%Business Intelligence Developer%' then 'BI Engineer'
             when title ilike '%BI Developer%' then 'BI Engineer'
             when title ilike '%BI Engineer%' then 'BI Engineer'
+            when title ilike '%Director%of%Analytics%' then 'Director, Analytics'
+            when title ilike '%Head%of%Analytics%' then 'Director, Analytics'
+            else 'Other'
         end as cleaned_title
     from extract_seniority
 ),
